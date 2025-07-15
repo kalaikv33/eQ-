@@ -1,1 +1,36 @@
 This is the file created for practicing the protocols in embedded C.
+
+cmd : 
+git
+git config --global username ""
+git config --global email ""
+
+To create file in VS code -> github
+
+insert ;
+{
+    git clone <http link>;
+    git status;
+}
+add - git add <file name>;
+commit - git commit -m "<message>";
+push or pull;
+push - git push origin main;
+pull - git pull;
+
+If every new folder created (.git) is required
+
+to add multiple extension in same repo (use git add .)
+
+To know branch - git branch;
+Tochange branch name - git branch -M <name>;
+To view all branch - git branch -a;
+To add new branch - git branch <name>;
+To change from one branch to another - git checkout <name>;
+
+
+merge:
+main branch ->
+To merge the both branch main & sub-branch - git merge <name> ;
+
+To check difference from one branch to another - git diff <name> ;
