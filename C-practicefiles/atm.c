@@ -3,17 +3,19 @@
    Date    : 16.07.2025
    Time    : 4:29 PM
     
+    used cases : functions,switch-case,do-while,time.h,if-else,
 */
 
 #include<stdio.h>
 #include"string.h"
+#include<time.h>
 
 int init_bank();
 unsigned int credit();
 int debit();
+int mini_bal();
 
-static int avail_bal=200;
-unsigned int i=1;
+static int avail_bal;
 
 int main()
 {
@@ -24,36 +26,25 @@ int main()
 	printf("\n                             IDFC Bank DELHI                           ");
 	
 	
-	do{
 	   printf("\n\n\nEnter your Account number : ");
 	   scanf("%d",&acc_num);
-	   i++;
-      }
       
-    while(i<2);
-    {
 	  if(acc_num == 220044)
     	{
 		  printf("\n                        Welcome to the ATM                  ");
 		  printf("\n\nAccount Holder's name   : kabir");
 	      printf("\nMobile Number           : 1234567891");
-		  printf("\nAvailable Balance       : %d", avail_bal);
 		  printf("\nBranch Name             : IDFC Bank rajouri garden ");
 		
-		
-		     init_bank();
+		  init_bank();
 	    }
-	
 	else
 		printf("\n\nEnter Account number is invalid !!!");
-    }
-	
 }
 
 int init_bank()
 {
-	unsigned int j;
-	char menu;
+	unsigned int j,menu; //char loop;
 	
 	printf("\n\n\n                      SELECT                            ");
 		printf("\n                   1. Credit                                ");
@@ -62,43 +53,48 @@ int init_bank()
 								printf("\n                   4. Mini Balance                                ");
 							        	printf("\n                   5. EXIT                                ");
 								
-		printf("\n*********************************************************\n");
-		scanf("%c",&menu);
+
+      do
+      {
+      	printf("\n*********************************************************\n");
+		scanf("%d",&menu);
 		
-	  for(j=1;j<10;j++)
-	  {	
 		switch(menu)
 		{
-		  case '1':
+		  case 1:
 		  printf("\ncurrent page : credit ");
 		  credit();	
 		  break;
 		  
-		  case '2':
+		  case 2:
 		  printf("\ncurrent page : Debit ");
 		  debit();	
 		  break;
 		  
-		  case '3':
+		  case 3:
 		  printf("\ncurrent page : Available Balance ");
 		  printf("\n\nAvailable Balance : %d", avail_bal);	
 		  break;
 		  
-		  case '4':
+		  case 4:
 		  printf("\ncurrent page : Mini Balance ");
-		  //credit();	
+		  mini_bal();	
 		  break;
 		  
-		  case '5':
+		  case 5:
 		  printf("\ncurrent page : EXIT ");
-		   j=11;
-		  printf("\n\n\n       Thanks for choosing us !!!                                   ");
 		  break;
 		  
 		  default:
 		  printf("\n\n\n       Thanks for choosing us !!!                                   ");
 		}
+		//printf("\n");
+        //printf("\nDo you want to continue : y/n\t");
+        //scanf("%s",&loop);
 	  }
+	  //while(loop == 'y' | loop == 'Y');
+	  while(menu !=5);
+	  return 0;
 }
 unsigned int credit()
 {
@@ -118,6 +114,37 @@ int debit()
 	printf("\nDebited amount in account : %d", debit_amt);
 	printf("\nCurrent Balance in account : %d", avail_bal);
 }
+int mini_bal()
+{
+	time_t now;
+    struct tm *current_time;
+	printf("\n\n\t\t**************** IDFC BANK *****************");
+	printf("\n\t\t\t IDFC BANK rajouri garden \t\t\t");
+	printf("\n\nAcc holder name : Kabir\t\tAccount Number : ****44");
+	printf("\nAvailable Balance : %d",avail_bal);
+    //getting time in console page, predefined syntax is here in C-code.
+    time(&now);
+    current_time = localtime(&now);
+
+    printf("\nDate and Time : %s", asctime(current_time));	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
