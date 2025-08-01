@@ -2,8 +2,7 @@
 /* creator : Kv
    Date    : 16.07.2025
    Time    : 4:29 PM
-<<<<<<< HEAD
-   last updated :01.08.25 / 01:42 PM
+    
     used cases : functions,switch-case,do-while,time.h,if-else,basic(struct&array)
     Need to use: pointer,for loop,bit manipulation,bit filed,
 */
@@ -13,16 +12,6 @@
 #include<time.h>
 
 //func-declaration
-=======
-    
-    used cases : functions,switch-case,do-while,time.h,if-else,
-*/
-
-#include<stdio.h>
-#include"string.h"
-#include<time.h>
-
->>>>>>> 80e75e11f95394676487cab3ebe1369d05266bd1
 int init_bank();
 unsigned int credit();
 int debit();
@@ -40,7 +29,6 @@ struct reg{
 
 int main()
 {
-<<<<<<< HEAD
 	unsigned const int acc_num=220044,menu;
 
 	int i;
@@ -106,49 +94,17 @@ int main()
 		   printf("\n\t\t\t\tThanks for using our service!!!");     
 	    }}while(menu != 3);
 	    return 0;
-=======
-	unsigned const int acc_num=220044;
-	
-	printf("                              *** WELCOME ***                  ");
-	printf("\n                              TO ATM MACHINE                   ");
-	printf("\n                             IDFC Bank DELHI                           ");
-	
-	
-	   printf("\n\n\nEnter your Account number : ");
-	   scanf("%d",&acc_num);
-      
-	  if(acc_num == 220044)
-    	{
-		  printf("\n                        Welcome to the ATM                  ");
-		  printf("\n\nAccount Holder's name   : kabir");
-	      printf("\nMobile Number           : 1234567891");
-		  printf("\nBranch Name             : IDFC Bank rajouri garden ");
-		
-		  init_bank();
-	    }
-	else
-		printf("\n\nEnter Account number is invalid !!!");
->>>>>>> 80e75e11f95394676487cab3ebe1369d05266bd1
 }
 
 int init_bank()
 {
 	unsigned int j,menu; //char loop;
-<<<<<<< HEAD
-=======
-	
->>>>>>> 80e75e11f95394676487cab3ebe1369d05266bd1
 	printf("\n\n\n                      SELECT                            ");
 		printf("\n                   1. Credit                                ");
 				printf("\n                   2. Debit                                ");
 						printf("\n                   3. Available Balance                                ");
 								printf("\n                   4. Mini Balance                                ");
 							        	printf("\n                   5. EXIT                                ");
-<<<<<<< HEAD
-=======
-								
-
->>>>>>> 80e75e11f95394676487cab3ebe1369d05266bd1
       do
       {
       	printf("\n*********************************************************\n");
@@ -223,43 +179,3 @@ int mini_bal()
 
     printf("\nDate and Time : %s", asctime(current_time));	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<<<<<<< HEAD
-=======
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> 80e75e11f95394676487cab3ebe1369d05266bd1
