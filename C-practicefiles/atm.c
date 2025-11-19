@@ -1,7 +1,7 @@
 // project is created for use all datatypes and functions
 /* creator : Kv
-   Date    : 16.07.2025
-   Time    : 4:29 PM
+   Date    : 08.11.2025
+   Time    : 12:44 PM
     
     used cases : functions,switch-case,do-while,time.h,if-else,basic(struct&array)
     Need to use: pointer,for loop,bit manipulation,bit filed,
@@ -12,10 +12,10 @@
 #include<time.h>
 
 //func-declaration
-int init_bank();
-unsigned int credit();
-int debit();
-int mini_bal();
+int init_bank(); // No argument without return type
+unsigned int credit();  // No argument without return type
+int debit();  // No argument without return type
+int mini_bal();  // No argument without return type
 
 //variable-declaration
 //static int avail_bal;
