@@ -1,0 +1,58 @@
+/*
+creator  : Kv
+Date     : 07.12.2025
+Time     : 16:23 PM
+used cases : SPI communication in master mode TX & RX
+Submodel: STM32F103C8T6
+model : cortex M-3(STM32)
+
+ Configuring the SPI in master mode
+*/
+
+#include<stm32f10x.h>
+
+void spi_init();
+void spi_tx(int abc);
+void spi_rx(int abd);
+
+int main(){
+	spi_init();
+	spi_tx(1);
+}
+
+
+
+void spi_init(){
+	//spi in master mode TX & RX
+	RCC->APB2ENR|=RCC_APB2ENR_SPI1EN|RCC_APB2ENR_IOPAEN|RCC_APB2ENR_AFIOEN;
+	/*
+	SPIx_SCK - Master - Alternate function push-pull
+	SPIx_MOSI - Full duplex / master Alternate function push-pull
+	SPIx_MISO - Full duplex / master Input floating / Input pull-up
+	SPIx_NSS - 
+	*/
+	//PA7 - MOSI, PA6 - MISO, PA5 - SCK, PA4 - SS
+	GPIOA->CRL &=~(0XF <<(4*7));
+	GPIOA->CRL |=(0XA << (4*7));
+	
+	GPIOA->CRL &=~(0XF << (4*6));
+	GPIOA->CRL |=(0X4 << (4*6));
+	
+	GPIOA->CRL &=~(0XF << (4*5));
+	GPIOA->CRL |=(0XA << (4*5));
+
+  GPIOA->CRL &=~(0XF << (4*4));
+	GPIOA->CRL |=(0X3 << (4*4));	
+	
+	SPI1->CR1 |= (1<<2)|(1<<6)|(1<<8)|(1<<9);  //2 pin was master confg
+	SPI1->CR2 = (1<<2);
+}
+
+void spi_tx(int abc){
+		SPI1->DR=abc;
+		while(!(SPI1->SR & 1<<1));
+}
+void spi_rx(int abd){
+		while(!(SPI1->SR & 1<<0));
+		abd=SPI1->DR;
+}
