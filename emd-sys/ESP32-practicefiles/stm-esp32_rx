@@ -1,0 +1,32 @@
+/*
+creator  : Kv
+Date     : 07.12.2025
+Time     : 16:55 PM
+used cases :ESP communication RX
+Submodel: ESP32 wroom 32
+model : ESP32
+IDE : Arduino IDE
+
+ Configuring the UART receiver on an ESP32 microcontroller to receive data via UART communication.
+*/
+//using uart1 for communication
+//tx - gpio19
+//rx - gpio21
+
+#define Tx 19
+#define Rx 21
+
+HardwareSerial mySerial(1);
+
+void setup() {
+  Serial.begin(115200);
+  mySerial.begin(9600,SERIAL_8N1,Rx,Tx);
+  Serial.println("Handshake received!!");
+}
+
+void loop() {
+  if(mySerial.available()){
+     String msg = mySerial.readStringUntil('\n');
+     Serial.println("Received: " + msg);
+  }
+}
