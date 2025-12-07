@@ -1,0 +1,91 @@
+/*
+creator  : Kv
+Date     : 07.12.2025
+Time     : 16:45 PM
+used cases : ADC
+Submodel: STM32F103C8T6
+model : cortex M-3(STM32)
+
+ Configuring the ADC and displaying the value in 16x2 LCD
+*/
+#include<stm32f10x.h>
+void delay(int t)
+{
+	int i,k;
+	for(i=0;i<=t;i++)
+	{
+		for(k=0;k<=65535;k++);
+	}
+}
+
+void pulse()
+{
+	GPIOB->ODR &=0x1;   //EN=1
+	delay(1);
+	GPIOB->ODR &=~(0x1); //EN=0
+	delay(1);
+}
+
+void add(int addr)
+{
+	GPIOB->ODR &=~(0x2);   //RS
+	GPIOB->ODR &=~(0x4);   //RW
+	GPIOA->ODR &=(0XF0)>>4;
+	pulse();
+	GPIOA->ODR &=(0X0F);
+	pulse();
+}
+void data(int dis)
+{	
+  GPIOB->ODR &=0x2;   //RS
+	GPIOB->ODR &=~(0x4);//RW
+	GPIOA->ODR &=(0XF0)>>4;
+	pulse();
+  GPIOA->ODR &=(0X0F);
+	pulse();
+}
+
+void display(char *ptr)
+{
+	while(*ptr)
+	{
+		data(*ptr++);
+	}
+}
+
+int main()
+{
+	int value,a,b,c,d;
+	RCC->APB2ENR=RCC_APB2ENR_IOPAEN|RCC_APB2ENR_IOPBEN|RCC_APB2ENR_ADC1EN|RCC_APB2ENR_AFIOEN|RCC_CFGR_ADCPRE_DIV6;
+	GPIOA->CRL=0X00002222;
+	GPIOB->CRL=0X00002222;
+	ADC1->SQR3=0X7;
+	ADC1->SMPR2=0X00E00000;
+	ADC1->CR2=0X3;
+	delay(3);
+	ADC1->CR2=0X1;
+	//delay(3);
+	ADC1->CR2=0X4;
+	while(ADC1->CR2&(1<<2));
+	add(0X02);
+	add(0X28);
+	add(0X0E);
+	while(1)
+	{
+		add(0x80);
+		display("ADC");
+    if(ADC1->SR&(1<<1))
+		{
+			value=ADC1->DR;
+		}
+		a=value/1000;
+		b=(value%1000)/100;
+		c=(value%100)/10;
+		d=value%10;
+		data(a+48);
+		data(b+48);
+		data(c+48);
+		data(d+48);
+	}
+}
+		
