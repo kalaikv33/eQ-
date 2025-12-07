@@ -1,0 +1,112 @@
+/*
+creator  : Kv
+Date     : 07.12.2025
+Time     : 16:50 PM
+used cases :I2C communication TX & RX
+Submodel: STM32F103C8T6
+model : cortex M-3(STM32)
+
+ Configuring the I2C in master mode
+*/
+#include<stm32f10x.h>
+
+unsigned long int i,j;
+void delay(unsigned long int k)
+{
+	for(i=0;i<=k;i++)
+	{
+		for(j=0;j<=65535;j++)
+		{
+			
+		}
+		
+	}
+}
+void pulse()
+{
+	GPIOC->ODR|=1<<14;
+	delay(1);
+	GPIOC->BRR|=1<<14;
+	delay(1);
+}
+void display(unsigned char a, unsigned int b)
+{
+	GPIOA->ODR=0X00000000; 
+	GPIOC->ODR=0X00000000;	//to clear existing value
+	GPIOC->ODR |=b<<15;                //rs pin ku bit value
+	GPIOA->ODR |=  ((a & 0XF0)>>4);                            //((a >>4) & 0X0F);                                 //(a & 0XF0)>>4;
+	pulse();
+	
+	GPIOA->ODR=0X00000000; 
+	GPIOC->ODR=0X00000000;
+	GPIOC->ODR |=b<<15;  	
+	GPIOA->ODR |=(a & 0X0F);
+	pulse();
+}
+void string(unsigned char *ptr)
+{
+	while(*ptr)
+	{
+		display(*ptr++,1);
+	}
+}
+int main()
+{
+	int min,sec;
+	display(0X01,0);
+	display(0X02,0);
+	display(0X28,0);
+	display(0X0E,0);
+	RCC->APB2ENR=1<<0|1<<3;    //alternate func&portA
+	RCC->APB1ENR=1<<21;        //using i2c
+	GPIOB->CRL=0XEE00000;      //pg 167
+	I2C1->CR2=10;                     //clock
+	I2C1->CCR=50;                    //clock control
+	I2C1->TRISE=11;                  //rise time
+	I2C1->CR1=1<<0;                  //i2c enable
+	I2C1->CR1|=1<<8;                   //start
+	while(!(I2C1->SR1&1<<0));        //start SB bit
+	I2C1->DR=0Xd0;                   //slave address
+	while(!(I2C1->SR1&1<<1));         //address
+	while(!(I2C1->SR2&1<<2));         //address data trans/receive
+	while(!(I2C1->SR1&1<<7));         //clock weather register is empty or not
+	//I2C1->SR2;
+	I2C1->DR=0X00;
+	while(!(I2C1->SR1&1<<7));
+	I2C1->DR=0X55;
+	while(!(I2C1->SR1&1<<7));
+	I2C1->DR=0X59;
+	while(!(I2C1->SR1&1<<7));
+	I2C1->DR=0X11;
+	while(!(I2C1->SR1&1<<7));
+	I2C1->CR1|=1<<9;             //stop
+	while(I2C1->SR2&1<<0);       //SB setting 0
+	while(1)
+	{
+		display(0X80,0);
+		display('a',1);
+//		I2C1->CR1|=1<<8;
+//		while(!(I2C1->SR1&1<<0));
+//		I2C1->DR=0Xd0;
+//		while(!(I2C1->SR1&1<<1));
+//		while(!(I2C1->SR2&1<<2));
+//		while(!(I2C1->SR1&1<<7));
+//		I2C1->DR=0X00;
+//		while(!(I2C1->SR1&1<<7));
+//		I2C1->CR1|=1<<8;
+//		while(!(I2C1->SR1&1<<0));
+//		I2C1->DR=0Xd1;
+//		while(!(I2C1->SR1&1<<1));
+//		I2C1->SR2;
+//		while(!(I2C1->SR1&1<<6));
+//		sec=I2C1->DR;
+//		I2C1->CR1|=1<<10;
+//		while(!(I2C1->SR1&1<<6));
+//		min=I2C1->DR;
+//		I2C1->CR1&=~(1<<10);    //to stop read not ack
+//		I2C1->CR1|=1<<9;
+//		while(I2C1->SR1&1<<0);
+//		display(sec,1);
+//		display(min,1);
+	}
+}

@@ -1,0 +1,48 @@
+#include<stdio.h>
+#include<stm32f10x.h>
+#include<stdint.h>
+
+//setting up pin configuration technique learned by chat gpt
+/*
+creator : Kv
+date :05/12/2025
+Time : 10:48
+
+pin = PA5
+GPIOA->CRL &= ~(0XF << (5*4)); // bit clear
+ GPIOA->CRL |= (0X2 << (5*4)); // bit set
+0X2 : CNF 00 mode 10
+5 : index of pin-PA5(CRL) pin * 4 bits
+4 : 1 pin = 4 bits
+
+****************************************************************************************
+pin = PA12 
+GPIOA->CRH &= ~(0XF << (4*4)); // bit clear
+ GPIOA->CRH |= (0X2 << (4*4)); // bit set
+0X2 : CNF 00 mode 10
+4 : index of pin-PA12(CRH) pin-8 * 4
+4 : 1 pin = 4 bits
+*/
+typedef unsigned int unit;
+	
+void delay(unit d){
+while(d--);	
+}
+
+int main(){
+	RCC->APB2ENR=RCC_APB2ENR_IOPAEN;
+	//CRL = 0 -- 7
+	//pin = PA5
+	GPIOA->CRL &= ~(0XF << (5*4)); // bit clear
+	GPIOA->CRL |= (0X2 << (5*4)); // bit set
+	//CRH = 8 -- 15
+	//pin = PA12  index : pin-8 = 4 offset : 4 * 4 = 16
+	GPIOA->CRH &= ~(0XF << (4*4)); // bit clear
+	GPIOA->CRH |= (0X2 << (4*4)); // bit set
+while(1){
+	GPIOA->BSRR = (1<<5)|(1<<12);
+	delay(50);
+	GPIOA->BRR = (1<<5)|(1<<12);
+	delay(50);
+  }
+}
