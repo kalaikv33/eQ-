@@ -47,6 +47,6 @@ void delaytimer(unit k){
 			{
 			sec++;
 			TIM2->SR&=~(1<<0);
+
 	    }
 }}
-
