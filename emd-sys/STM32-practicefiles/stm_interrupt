@@ -1,0 +1,77 @@
+/*
+
+creator  : Kv
+Date     : 28.12.2025
+Time     : 11: 30 AM
+used cases : STM interrupt in Timer & External IO
+Submodel: STM32F103C8T6
+model : cortex M-3(STM32)
+
+*/
+ka
+
+#include<stm32f10x.h>
+
+void EXTI0_IRQHANDLER();
+void TIM2_IRQHANDLER();
+void delay(unsigned int t);
+
+int main(){
+RCC->APB2ENR |= RCC_APB2ENR_IOPAEN|RCC_APB2ENR_IOPCEN|RCC_APB2ENR_AFIOEN;
+RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
+	
+	GPIOA->CRL &= ~(0XF <<(4*0)); //PA0 pin
+	GPIOA->CRL |= (0X2 <<(4*0));
+	GPIOA->CRL &= ~(0XF <<(4*1)); //PA1 pin
+	GPIOA->CRL |= (0X4 <<(4*1));
+	GPIOA->CRH &= ~(0XF <<(4*5)); //PC13 pin inbuilt led pin
+	GPIOA->CRH |= (0X2 <<(4*5));
+	
+	//Timer config
+	TIM2->ARR = 10000-1;
+	TIM2->PSC = 7200-1;
+	TIM2->CNT = 0;
+	TIM2->DIER =  (1<<0); // ENable Update event
+	TIM2->CR1 = (1<<0); // ENable counter
+	
+  EXTI->IMR = 1<<0;  // Interrupt Mask Register
+	EXTI->FTSR = 1<<0;  // Falling edge
+	EXTI->RTSR = 1<<0;   // Rising edge
+	void EXTI0_IRQHANDLER();
+	void TIM2_IRQHANDLER();
+	/*
+	for setting priority for interrupt:
+	NVIC_EnableIRQ(EXTI0_IRQn);
+	NVIC_EnableIRQ(EXTI2_IRQn);
+	NVIC_EnableIRQ(EXTI3_IRQn);
+    NVIC_SetPendingIRQ(0,EXTI0_IRQn);
+	  NVIC_SetPendingIRQ(2,EXTI0_IRQn);
+	  NVIC_SetPendingIRQ(1,EXTI0_IRQn);
+	*/
+	
+	while(1){
+	
+   }
+	}
+
+	void delay(unsigned int t){
+	for(unsigned int q=0;q<t;q++){
+    for(unsigned int w=0;w<65535;w++);
+	   }		
+	}
+	
+	void EXTI0_IRQHANDLER(){ //EXTI0_IRQHANDLER -> interrupt name match to startup file
+		if(EXTI->PR&(1<<0)){ // Pending register for External interrupt
+			GPIOA->ODR |= (1<<1);
+			delay(5);
+			GPIOA->BRR = (1<<1);
+			delay(5);
+		}
+	}
+	
+	void TIM2_IRQHANDLER(){
+		if(TIM2->SR&(1<<0)){
+			GPIOC->ODR ^= (1<<13);
+			TIM2->SR &=~(1<<0);
+		}
+	}
