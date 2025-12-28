@@ -8,9 +8,9 @@ model : cortex M-3(STM32)
 
  Configuring the PWM
  formula:
- f{timer}=APB1/{PSC+1}
- f{PWM}=f{timer}/(ARR+1)
- Duty Cycle={CCR}/{ARR+1} * 100%
+ f{timer}=APB1/{PSC+1}  = 72MHz/1000 = 72Hz
+ f{PWM}=f{timer}/(ARR+1) = 7200/16 = 450Hz
+ Duty Cycle={CCR}/{ARR+1} * 100%  ~  CCR = Duty cycle / 100% * ARR+1  = 0.5*16 = 8
  ARR=Fosc/psc*fpwm
 
 
@@ -38,8 +38,8 @@ int main()
 	TIM1->CNT = 0;
 	TIM1->CR1 |= (1 << 7) | (1 << 0);	// ARPE :1 | Counter EN : 1
 	TIM1->CCMR1 |= (1 << 7) | (6 << 4); // EN - output compare mode & preload
-	TIM1->CCER |= (1 << 0) | (1 << 1);	// Capture/Compare 1 output enable | Capture/Compare 1 output polarity
-	// TIM1->BDTR |= (1<<15); // MOE
+	TIM1->CCER |= (1 << 0);				//|(1<<1); // Capture/Compare 1 output enable | Capture/Compare 1 output polarity
+	TIM1->BDTR |= (1 << 15);			// MOE
 
 	while (1)
 	{
