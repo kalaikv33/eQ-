@@ -11,12 +11,13 @@ model : cortex M-3(STM32)
 
 #include<stm32f10x.h>
 #include<stdint.h>
-#include"string.h"
 void uart_tx(char abc);
 void uart_txstr(char *);
 void uart_rx();
+void DMA1_Channel5_IRQHandler();
 
 uint8_t rx_data[10];
+volatile uint8_t data_ready = 0;
 
 int main()
 {
@@ -35,7 +36,7 @@ int main()
 
     while (1)
     {
-
+      if (data_ready) data_ready = 0;
     }
 }
 
@@ -64,8 +65,19 @@ void uart_rx()
     USART1->CR1 |= (1 << 13) | (1 << 2);
     USART1->CR3 |= (1 << 6); //Configuring the UART_CR3 : DMA enable receiver
     USART1->BRR |= 0X341;
-    DMA1_Channel5->CCR |= (1 << 7) | (1 << 5) | (1 << 0); // congiguring  Memory increment mode |  Circular mode |  Channel enable
+    DMA1_Channel5->CCR |= (1 << 7) | (1 << 5) | (1 << 1) | (1 << 0); //congiguring:Memory increment mode |  Circular mode | Transfer_complete_interrupt EN | Channel enable
     DMA1_Channel5->CPAR = (uint32_t)& (USART1->DR);
     DMA1_Channel5->CMAR = (uint32_t)rx_data;
     DMA1_Channel5->CNDTR = 10; //number of bytes
+
+    NVIC_EnableIRQ(DMA1_Channel5_IRQn);
+    NVIC_SetPriority(DMA1_Channel5_IRQn, 1);
+}
+
+void DMA1_Channel5_IRQHandler(void) {
+    // Check if the Transfer Complete flag is set
+    if (DMA1->ISR & DMA_ISR_TCIF5) {
+        data_ready = 1; // Signal main loop that data is here
+        DMA1->IFCR |= DMA_IFCR_CTCIF5; 
+    }
 }
