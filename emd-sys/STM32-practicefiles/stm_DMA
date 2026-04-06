@@ -33,6 +33,7 @@ int main()
     GPIOA->CRH |= (0X4 << (4 * 2));
 
     uart_rx();
+    DMA1_Channel5_IRQHandler();
 
     while (1)
     {
