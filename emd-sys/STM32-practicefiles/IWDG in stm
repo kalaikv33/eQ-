@@ -7,6 +7,7 @@ Submodel: STM32F103C8T6
 model : cortex M-3(STM32)
 
  Configuring IWDG timer
+IWDG = (time(ms) * 3200) / (4 * 2(pr) * 1000) -1  //Formula
 */
 
 #include<stm32f10x.h>
@@ -27,12 +28,12 @@ while(1){
 void IWDG_init(void ){
  IWDG->KR = 0X5555; //key value 5555h to enables access to the IWDG_PR and IWDG_RLR registers 
  /*
-    Value 4 corresponds to a divider of 64.
+    Value 4 corresponds to a divider of 64
     40kHz / 64 = 625 Hz
  */
  IWDG->PR = 4;
  IWDG->RLR = 625; // 625 counts at 625 Hz = 1.0 second timeout
- while(IWDG->SR & (IWDG_SR_PVU | IWDG_SR_RVU)); //PVU & RVU flags to be cleared before reloading
+ while(IWDG->SR & ((1<<1) | (1<<0))); //PVU & RVU flags to be cleared before reloading
  IWDG->KR = 0XAAAA; // value AAAAh, otherwise the watchdog generates a reset 
  IWDG->KR = 0XCCCC; // key value CCCCh starts the watchdog 
 }
