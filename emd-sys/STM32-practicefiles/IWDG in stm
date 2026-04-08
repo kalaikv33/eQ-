@@ -1,0 +1,38 @@
+/*
+creator  : Kv
+Date     : 08.04.2026
+Time     : 13:11 PM
+used cases : Enabling the Independent watchdog timer
+Submodel: STM32F103C8T6
+model : cortex M-3(STM32)
+
+ Configuring IWDG timer
+*/
+
+#include<stm32f10x.h>
+#define reload IWDG->KR = 0XAAAA
+
+int main(){
+    RCC->APB2ENR |= RCC_APB2ENR_IOPCEN;
+    GPIOC->CRH &= ~(0xF << 20);
+    GPIOC->CRH |= (0x2 << 20);
+    IWDG_init();
+while(1){
+    GPIOC->ODR ^= (1<<13);
+    for(volatile int i=0;i<65535;i++);
+    reload;
+  }
+}
+
+void IWDG_init(void ){
+ IWDG->KR = 0X5555; //key value 5555h to enables access to the IWDG_PR and IWDG_RLR registers 
+ /*
+    Value 4 corresponds to a divider of 64.
+    40kHz / 64 = 625 Hz
+ */
+ IWDG->PR = 4;
+ IWDG->RLR = 625; // 625 counts at 625 Hz = 1.0 second timeout
+ while(IWDG->SR & (IWDG_SR_PVU | IWDG_SR_RVU)); //PVU & RVU flags to be cleared before reloading
+ IWDG->KR = 0XAAAA; // value AAAAh, otherwise the watchdog generates a reset 
+ IWDG->KR = 0XCCCC; // key value CCCCh starts the watchdog 
+}
