@@ -1,0 +1,97 @@
+/*
+creator  : Kv
+Date     : 20.04.2026
+Time     : 15:04 PM
+used cases :ESP communication with OTA
+Submodel: ESP32 wroom 32
+model : ESP32
+IDE : Arduino IDE
+
+ Configuring the ESP32 with OTA
+*/
+
+/******************* .h file =>> START *******************/
+#ifndef MY_OTA_H
+#define MY_OTA_H
+
+#define ELEGANTOTA_USE_ASYNC 1
+
+#include <WiFi.h>
+#include <AsyncTCP.h>
+#include <ESPAsyncWebServer.h>
+#include <ElegantOTA.h>
+
+// We declare the server here so it's accessible to the functions
+// but we use 'extern' if we want to define it in the main file, 
+// or just keep it simple as a global in this header.
+extern AsyncWebServer server; 
+
+void startOTA() {
+  // Root page
+  server.on("/", AsyncWebRequestMethod::HTTP_GET, [](AsyncWebServerRequest *request) {
+    request->send(200, "text/plain", "ESP32 is running. Use /update for OTA.");
+  });
+
+  // Client IP Route
+  server.on("/client-ip", AsyncWebRequestMethod::HTTP_GET, [](AsyncWebServerRequest *request) {
+    String clientIP = request->client()->remoteIP().toString();
+    request->send(200, "text/plain", "Your Device IP is: " + clientIP);
+  });
+
+  // Start ElegantOTA with your credentials
+  ElegantOTA.begin(&server, "User", "Pass123");
+  server.begin();
+  
+  Serial.println("HTTP server started and OTA ready.");
+}
+
+#endif
+/******************* .h file =>> END *******************/
+
+/******************* Use it in your main .ino file *******************/
+
+#include <WiFi.h>
+#include "myOTA.h" // Include your custom header
+
+const char* ssid = "kv";
+const char* password = "SecureIOT";
+
+// Define the server object here
+AsyncWebServer server(80);
+
+void setup() {
+  Serial.begin(115200);
+  
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  
+  Serial.println("\nConnected!");
+  Serial.println(WiFi.localIP());
+
+  // Call the function from your header file
+  startOTA();
+}
+
+void loop() {
+  // Still need this for ElegantOTA to handle the reset/update logic
+  ElegantOTA.loop();
+}
+
+/******************* END of main .ino file *******************/
+
+/******************* To generate the file you need for OTA *******************/
+1. In the Arduino IDE, go to the top menu and select Sketch.
+
+2. Click on Export Compiled Binary (or press Ctrl + Alt + S).
+
+3. The IDE will compile the code again. Watch the progress bar at the bottom.
+
+4. Once it says "Done compiling", go to Sketch > Show Sketch Folder.
+
+5. You should now see a folder named build or a file directly in the folder ending in .bin.(OTA.ino.bin)
+
+6. Can use that single .bin file to update 100 client devices in the web
+	Web Browser : Access"IP/update" >> Login"credentials (User / Pass123)" >> Flash"Select new .bin file and click Upload" 
