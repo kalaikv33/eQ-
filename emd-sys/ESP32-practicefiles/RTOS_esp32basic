@@ -1,0 +1,58 @@
+/*
+creator  : Kv
+Date     : 21.04.2026
+Time     : 15:01 PM
+used cases :RTOS in esp32
+Submodel: ESP32 wroom 32
+model : ESP32
+IDE : Arduino IDE
+
+ Configuring the RTOS in esp32
+*/
+
+
+void vTaskLed(void *pvParameters);
+void vTaskSerial(void *pvParameters);
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(2,OUTPUT);
+
+/*  BaseType_t
+Parameters:
+
+TaskFunction_t pxTaskCode
+const char *const pcName
+const uint32_t usStackDepth
+void *const pvParameters
+UBaseType_t uxPriority
+TaskHandle_t *const pxCreatedTask
+static inline BaseType_t
+xTaskCreate(TaskFunction_t pxTaskCode, const char *const pcName,
+            const uint32_t usStackDepth, void *const pvParameters,
+            UBaseType_t uxPriority, TaskHandle_t *const pxCreatedTask)
+*/
+  xTaskCreate(vTaskLed,"Led_blink",1024,NULL,1,NULL);
+  xTaskCreate(vTaskSerial,"serial_monitor",2048,NULL,1,NULL);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+
+}
+
+void vTaskLed(void *pvParameters){
+  for(;;){
+    digitalWrite(2,HIGH);
+    vTaskDelay(500/portTICK_PERIOD_MS);
+    digitalWrite(2,LOW);
+    vTaskDelay(500/portTICK_PERIOD_MS);
+  }
+}
+
+void vTaskSerial(void *pvParameters){
+  for(;;){
+    Serial.println("Hi its working!!!");
+    vTaskDelay(2000/portTICK_PERIOD_MS);//macro portTICK_PERIOD_MS
+  }
+}
