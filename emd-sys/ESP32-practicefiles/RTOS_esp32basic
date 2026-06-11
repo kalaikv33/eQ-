@@ -21,12 +21,12 @@ void setup() {
 /*  BaseType_t
 Parameters:
 
-TaskFunction_t pxTaskCode
-const char *const pcName
-const uint32_t usStackDepth
-void *const pvParameters
-UBaseType_t uxPriority
-TaskHandle_t *const pxCreatedTask
+TaskFunction_t pxTaskCode   // Task functio
+const char *const pcName    // Name
+const uint32_t usStackDepth // Stack
+void *const pvParameters    // No parameter
+UBaseType_t uxPriority      // Priority
+TaskHandle_t *const pxCreatedTask // Handle
 static inline BaseType_t
 xTaskCreate(TaskFunction_t pxTaskCode, const char *const pcName,
             const uint32_t usStackDepth, void *const pvParameters,
